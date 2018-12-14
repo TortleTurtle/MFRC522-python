@@ -414,3 +414,22 @@ class MFRC522:
     self.Write_MFRC522(self.TxAutoReg, 0x40)
     self.Write_MFRC522(self.ModeReg, 0x3D)
     self.AntennaOn()
+
+    #Eigen geschreven code
+
+  # Defining a new function that returns the data in an array instead of a string.
+  def MFRC522_GiveData(self, blockAddr):
+    #De functie is  gekopieerd van de MFRC522_Read functie.
+    recvData = []
+    recvData.append(self.PICC_READ)
+    recvData.append(blockAddr)
+    pOut = self.CalulateCRC(recvData)
+    recvData.append(pOut[0])
+    recvData.append(pOut[1])
+    (status, backData, backLen) = self.MFRC522_ToCard(self.PCD_TRANSCEIVE, recvData)
+    if not(status == self.MI_OK):
+      print "Error while reading!"
+    i = 0
+    if len(backData) == 16:
+      #Returning the backData variable it returns an Array.
+      return backData
